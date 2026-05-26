@@ -1,0 +1,60 @@
+@{
+    ViewData["Title"] = "Dashboard - Zánganos SA";
+}
+
+<div class="text-center">
+    <h1 class="display-4 text-warning fw-bold">🍯 SGAI - Zánganos SA</h1>
+    <p class="lead">Sistema de Gestión Apícola Integral</p>
+    <hr />
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-4 mb-3">
+        <div class="card shadow-sm border-warning">
+            <div class="card-body text-center">
+                <h5 class="card-title"><i class="bi bi-geo-alt-fill text-warning"></i> Apiarios</h5>
+                <p class="card-text">Gestión de geolocalización y capacidad de apiarios.</p>
+                <a href="/Apiarios" class="btn btn-warning w-100">Ir a Apiarios</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card shadow-sm border-warning">
+            <div class="card-body text-center">
+                <h5 class="card-title"><i class="bi bi-box-seam text-warning"></i> Colmenas</h5>
+                <p class="card-text">Registro individual y estado de la reina.</p>
+                <a href="/Colmenas" class="btn btn-warning w-100">Ir a Colmenas</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card shadow-sm border-warning">
+            <div class="card-body text-center">
+                <h5 class="card-title"><i class="bi bi-heart-pulse-fill text-danger"></i> Sanidad</h5>
+                <p class="card-text">Tratamientos, medicamentos y alertas.</p>
+                <a href="/Tratamientos" class="btn btn-outline-danger w-100">Ver Tratamientos</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <div class="card shadow-sm border-success">
+            <div class="card-body text-center">
+                <h5 class="card-title"><i class="bi bi-basket-fill text-success"></i> Cosechas</h5>
+                <p class="card-text">Registro de extracción por lote.</p>
+                <a href="/Cosechas" class="btn btn-success w-100">Gestionar Cosechas</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <div class="card shadow-sm border-primary">
+            <div class="card-body text-center">
+                <h5 class="card-title"><i class="bi bi-droplet-fill text-primary"></i> Barriles (Exportación)</h5>
+                <p class="card-text">Trazabilidad de barriles de exportación (300kg).</p>
+                <a href="/Barriles" class="btn btn-primary w-100">Ver Barriles</a>
+            </div>
+        </div>
+    </div>
+</div>

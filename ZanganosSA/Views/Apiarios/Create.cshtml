@@ -1,0 +1,43 @@
+@model ZanganosSA.Models.Apiario
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Apiario</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Nombre" class="control-label"></label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UbicacionGps" class="control-label"></label>
+                <input asp-for="UbicacionGps" class="form-control" />
+                <span asp-validation-for="UbicacionGps" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SeccionalPolicial" class="control-label"></label>
+                <input asp-for="SeccionalPolicial" class="form-control" />
+                <span asp-validation-for="SeccionalPolicial" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

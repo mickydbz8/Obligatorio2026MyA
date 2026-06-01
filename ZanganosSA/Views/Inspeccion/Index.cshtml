@@ -1,0 +1,62 @@
+@{
+    ViewData["Title"] = "Inspección Rápida de Campo (IA)";
+}
+
+<div class="container mt-4">
+    <div class="text-center mb-5">
+        <h2 class="text-info fw-bold"><i class="bi bi-robot"></i> Asistente de Campo con IA</h2>
+        <p class="lead">Simulación de la interfaz Manos Libres y Visión Computacional para uso con traje de apicultor.</p>
+    </div>
+
+    @if (TempData["MensajeVoz"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-mic-fill"></i> @TempData["MensajeVoz"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["MensajeCamara"] != null)
+    {
+        <div class="alert alert-warning alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-camera-fill"></i> @TempData["MensajeCamara"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="row text-center mt-5">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-body py-5">
+                    <h1 class="display-1 text-primary mb-3"><i class="bi bi-mic"></i></h1>
+                    <h4 class="card-title">Dictado de Voz</h4>
+                    <p class="card-text text-muted mb-4">
+                        Toca el botón para simular que Matías está dictando observaciones sobre una colmena usando el micrófono de su móvil.
+                    </p>
+                    <form asp-action="SimularVoz" method="post">
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm">
+                            <i class="bi bi-play-circle-fill"></i> Simular Dictado
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-body py-5">
+                    <h1 class="display-1 text-warning mb-3"><i class="bi bi-camera"></i></h1>
+                    <h4 class="card-title">Análisis de Material</h4>
+                    <p class="card-text text-muted mb-4">
+                        Toca el botón para simular que la cámara analiza el estado de un cajón y genera un diagnóstico preventivo.
+                    </p>
+                    <form asp-action="SimularCamara" method="post">
+                        <button type="submit" class="btn btn-warning btn-lg rounded-pill px-5 shadow-sm text-dark">
+                            <i class="bi bi-camera-fill"></i> Simular Análisis
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,38 +1,110 @@
+@model ZanganosSA.Models.HomeViewModel
+
 @{
     ViewData["Title"] = "Dashboard - Zánganos SA";
 }
 
-<div class="text-center">
+<div class="text-center mb-4">
     <h1 class="display-4 text-warning fw-bold">🍯 SGAI - Zánganos SA</h1>
     <p class="lead">Sistema de Gestión Apícola Integral</p>
+    <div class="d-flex justify-content-center gap-3">
+        <span class="badge bg-primary fs-6">Apiarios: @Model.TotalApiarios</span>
+        <span class="badge bg-success fs-6">Colmenas: @Model.TotalColmenas</span>
+    </div>
     <hr />
 </div>
 
-<div class="row mt-4">
-    <div class="col-md-4 mb-3">
-        <div class="card shadow-sm border-warning">
-            <div class="card-body text-center">
-                <h5 class="card-title"><i class="bi bi-geo-alt-fill text-warning"></i> Apiarios</h5>
-                <p class="card-text">Gestión de geolocalización y capacidad de apiarios.</p>
-                <a href="/Apiarios" class="btn btn-warning w-100">Ir a Apiarios</a>
+<!-- Panel de Alertas Inteligentes -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-danger shadow-sm">
+            <div class="card-header bg-danger text-white fw-bold">
+                <i class="bi bi-exclamation-triangle-fill"></i> Alertas Sanitarias y de Mantenimiento Activas
+            </div>
+            <ul class="list-group list-group-flush">
+                @if (Model.TratamientosActivos.Any())
+                {
+                    @foreach (var trat in Model.TratamientosActivos)
+                    {
+                        var fechaFin = trat.FechaInicio.AddDays(trat.DuracionDias);
+                        var diasRestantes = (int)(fechaFin - DateTime.Now).TotalDays;
+                        string alertClass = diasRestantes <= 2 ? "list-group-item-danger" : "list-group-item-warning";
+
+                        <li class="list-group-item @alertClass d-flex justify-content-between align-items-center">
+                            <span>
+                                <strong>Colmena:</strong> @trat.Colmena?.Identificador | 
+                                <strong>Medicamento:</strong> @trat.Medicamento 
+                                (Fin: @fechaFin.ToShortDateString())
+                            </span>
+                            @if (diasRestantes < 0)
+                            {
+                                <span class="badge bg-danger rounded-pill">VENCIDO (@Math.Abs(diasRestantes) días)</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning text-dark rounded-pill">Faltan @diasRestantes días</span>
+                            }
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li class="list-group-item text-muted">No hay tratamientos activos en este momento.</li>
+                }
+                <!-- Alerta Simulada de Alimentación -->
+                <li class="list-group-item list-group-item-info d-flex justify-content-between align-items-center">
+                    <span>
+                        <strong>Recordatorio:</strong> Revisar nivel de jarabe en Apiario Principal (Alimentación Suplementaria).
+                    </span>
+                    <span class="badge bg-info text-dark rounded-pill">Sugerencia</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3 mb-3">
+        <div class="card shadow-sm border-warning h-100">
+            <div class="card-body text-center d-flex flex-column justify-content-between">
+                <div>
+                    <h5 class="card-title"><i class="bi bi-geo-alt-fill text-warning"></i> Apiarios</h5>
+                    <p class="card-text text-muted small">Gestión de geolocalización y capacidad de apiarios.</p>
+                </div>
+                <a href="/Apiarios" class="btn btn-warning w-100 mt-2">Ir a Apiarios</a>
             </div>
         </div>
     </div>
-    <div class="col-md-4 mb-3">
-        <div class="card shadow-sm border-warning">
-            <div class="card-body text-center">
-                <h5 class="card-title"><i class="bi bi-box-seam text-warning"></i> Colmenas</h5>
-                <p class="card-text">Registro individual y estado de la reina.</p>
-                <a href="/Colmenas" class="btn btn-warning w-100">Ir a Colmenas</a>
+    <div class="col-md-3 mb-3">
+        <div class="card shadow-sm border-warning h-100">
+            <div class="card-body text-center d-flex flex-column justify-content-between">
+                <div>
+                    <h5 class="card-title"><i class="bi bi-box-seam text-warning"></i> Colmenas</h5>
+                    <p class="card-text text-muted small">Registro individual y estado de la reina.</p>
+                </div>
+                <a href="/Colmenas" class="btn btn-warning w-100 mt-2">Ir a Colmenas</a>
             </div>
         </div>
     </div>
-    <div class="col-md-4 mb-3">
-        <div class="card shadow-sm border-warning">
-            <div class="card-body text-center">
-                <h5 class="card-title"><i class="bi bi-heart-pulse-fill text-danger"></i> Sanidad</h5>
-                <p class="card-text">Tratamientos, medicamentos y alertas.</p>
-                <a href="/Tratamientos" class="btn btn-outline-danger w-100">Ver Tratamientos</a>
+    <div class="col-md-3 mb-3">
+        <div class="card shadow-sm border-danger h-100">
+            <div class="card-body text-center d-flex flex-column justify-content-between">
+                <div>
+                    <h5 class="card-title"><i class="bi bi-heart-pulse-fill text-danger"></i> Sanidad</h5>
+                    <p class="card-text text-muted small">Tratamientos, medicamentos y alertas.</p>
+                </div>
+                <a href="/Tratamientos" class="btn btn-outline-danger w-100 mt-2">Ver Tratamientos</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card shadow-sm border-info h-100 bg-light">
+            <div class="card-body text-center d-flex flex-column justify-content-between">
+                <div>
+                    <h5 class="card-title"><i class="bi bi-robot text-info"></i> Campo (IA)</h5>
+                    <p class="card-text text-muted small">Registro por voz y cámara en el apiario.</p>
+                </div>
+                <a href="/Inspeccion" class="btn btn-info text-white w-100 mt-2 fw-bold">Modo Inspección</a>
             </div>
         </div>
     </div>
@@ -40,20 +112,24 @@
 
 <div class="row">
     <div class="col-md-6 mb-3">
-        <div class="card shadow-sm border-success">
-            <div class="card-body text-center">
-                <h5 class="card-title"><i class="bi bi-basket-fill text-success"></i> Cosechas</h5>
-                <p class="card-text">Registro de extracción por lote.</p>
-                <a href="/Cosechas" class="btn btn-success w-100">Gestionar Cosechas</a>
+        <div class="card shadow-sm border-success h-100">
+            <div class="card-body text-center d-flex flex-column justify-content-between">
+                <div>
+                    <h5 class="card-title"><i class="bi bi-basket-fill text-success"></i> Cosechas</h5>
+                    <p class="card-text text-muted small">Registro de extracción por lote.</p>
+                </div>
+                <a href="/Cosechas" class="btn btn-success w-100 mt-2">Gestionar Cosechas</a>
             </div>
         </div>
     </div>
     <div class="col-md-6 mb-3">
-        <div class="card shadow-sm border-primary">
-            <div class="card-body text-center">
-                <h5 class="card-title"><i class="bi bi-droplet-fill text-primary"></i> Barriles (Exportación)</h5>
-                <p class="card-text">Trazabilidad de barriles de exportación (300kg).</p>
-                <a href="/Barriles" class="btn btn-primary w-100">Ver Barriles</a>
+        <div class="card shadow-sm border-primary h-100">
+            <div class="card-body text-center d-flex flex-column justify-content-between">
+                <div>
+                    <h5 class="card-title"><i class="bi bi-droplet-fill text-primary"></i> Barriles (Exportación)</h5>
+                    <p class="card-text text-muted small">Trazabilidad de barriles de exportación (300kg).</p>
+                </div>
+                <a href="/Barriles" class="btn btn-primary w-100 mt-2">Ver Barriles</a>
             </div>
         </div>
     </div>

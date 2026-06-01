@@ -1,31 +1,156 @@
-html {
-  font-size: 14px;
-}
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+:root {
+  --honey-primary: #f59e0b; /* Amber 500 */
+  --honey-secondary: #d97706; /* Amber 600 */
+  --honey-light: #fef3c7; /* Amber 50 */
+  --honey-dark: #78350f; /* Amber 900 */
+  --bg-color: #f8fafc; /* Slate 50 */
+  --text-main: #334155; /* Slate 700 */
 }
 
 html {
+  font-size: 16px;
   position: relative;
   min-height: 100%;
 }
 
 body {
   margin-bottom: 60px;
+  font-family: 'Outfit', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* Navbar Customization */
+.navbar {
+  background: linear-gradient(135deg, var(--honey-primary), var(--honey-secondary)) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+.navbar-brand, .nav-link {
+  color: white !important;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+.nav-link:hover {
+  transform: translateY(-2px);
+  color: var(--honey-light) !important;
+  text-shadow: 0 0 8px rgba(255,255,255,0.4);
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+/* Card Styling */
+.card {
+  border: none;
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+}
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Button Styling Override */
+.btn-primary {
+  background-color: var(--honey-primary);
+  border-color: var(--honey-secondary);
+  color: white;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+.btn-primary:hover {
+  background-color: var(--honey-secondary);
+  border-color: var(--honey-dark);
+  box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.4);
+}
+.btn-warning {
+  background-color: #fbbf24;
+  border-color: #f59e0b;
+  color: var(--honey-dark);
+  font-weight: 600;
+}
+
+/* Table Styling Override */
+.table {
+  background-color: white;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+.table thead th {
+  background-color: var(--honey-light);
+  color: var(--honey-dark);
+  font-weight: 700;
+  border-bottom: 2px solid var(--honey-primary);
+  padding: 1rem;
+}
+.table tbody td {
+  vertical-align: middle;
+  padding: 1rem;
+  color: var(--text-main);
+  border-bottom: 1px solid #e2e8f0;
+}
+.table tbody tr:hover {
+  background-color: #f1f5f9;
+}
+
+/* Forms Customization */
+.form-control, .form-select {
+  border-radius: 0.5rem;
+  border: 1px solid #cbd5e1;
+  padding: 0.75rem 1rem;
+  transition: all 0.3s ease;
+}
+.form-control:focus, .form-select:focus {
+  border-color: var(--honey-primary);
+  box-shadow: 0 0 0 0.25rem rgba(245, 158, 11, 0.25);
+}
+
+/* Global Titles */
+h1, h2, h3, h4, h5 {
+  font-weight: 700;
+  color: var(--honey-dark);
+}
+
+.text-warning {
+  color: var(--honey-secondary) !important;
+}
+
+/* Links in Tables */
+.table td a {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  margin: 0 0.2rem;
+  background-color: var(--honey-light);
+  color: var(--honey-dark);
+  border-radius: 0.25rem;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+.table td a:hover {
+  background-color: var(--honey-primary);
+  color: white;
+}
+
+/* Create New Links */
+p > a[href*="Create"] {
+  display: inline-block;
+  background-color: var(--honey-primary);
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-weight: 700;
+  box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.4);
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+p > a[href*="Create"]:hover {
+  background-color: var(--honey-secondary);
+  transform: translateY(-2px);
 }

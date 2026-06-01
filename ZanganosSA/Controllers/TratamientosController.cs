@@ -20,10 +20,23 @@ namespace ZanganosSA.Controllers
         }
 
         // GET: Tratamientos
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            var applicationDbContext = _context.Tratamientos.Include(t => t.Colmena);
-            return View(await applicationDbContext.ToListAsync());
+            int pageSize = 2;
+            var query = _context.Tratamientos.Include(t => t.Colmena);
+            int totalItems = await query.CountAsync();
+            int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            if (page < 1) page = 1;
+            if (totalPages > 0 && page > totalPages) page = totalPages;
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.HasPreviousPage = page > 1;
+            ViewBag.HasNextPage = page < totalPages;
+
+            var items = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            return View(items);
         }
 
         // GET: Tratamientos/Details/5

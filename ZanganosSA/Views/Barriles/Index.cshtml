@@ -38,3 +38,29 @@
     </tbody>
 </table>
 </div>
+
+<div class="d-flex justify-content-between align-items-center mt-4">
+    <div>
+        <span class="text-muted small">Página @ViewBag.CurrentPage de @(ViewBag.TotalPages == 0 ? 1 : ViewBag.TotalPages)</span>
+    </div>
+    <div class="d-flex gap-2">
+        @if (ViewBag.HasPreviousPage)
+        {
+            <a href="?page=@(ViewBag.CurrentPage - 1)" class="btn-paginado-dorado"><i class="bi bi-arrow-left"></i> Anterior</a>
+        }
+        else
+        {
+            <span class="btn-paginado-dorado disabled"><i class="bi bi-arrow-left"></i> Anterior</span>
+        }
+
+        @if (ViewBag.HasNextPage)
+        {
+            <a href="?page=@(ViewBag.CurrentPage + 1)" class="btn-paginado-dorado">Siguiente <i class="bi bi-arrow-right"></i></a>
+        }
+        else
+        {
+            <span class="btn-paginado-dorado disabled">Siguiente <i class="bi bi-arrow-right"></i></span>
+        }
+    </div>
+</div>
+

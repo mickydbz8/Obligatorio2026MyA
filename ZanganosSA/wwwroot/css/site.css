@@ -154,3 +154,33 @@ p > a[href*="Create"]:hover {
   background-color: var(--honey-secondary);
   transform: translateY(-2px);
 }
+
+/* Golden pagination buttons with black text */
+.btn-paginado-dorado {
+  background-color: #f59e0b; /* Honey/Golden */
+  color: #000000 !important;
+  border: 1px solid #d97706;
+  font-weight: 700;
+  padding: 0.5rem 1.2rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.btn-paginado-dorado:hover {
+  background-color: #fbbf24; /* Lighter golden on hover */
+  color: #000000 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+}
+.btn-paginado-dorado.disabled {
+  background-color: #cbd5e1;
+  color: #64748b !important;
+  border-color: #94a3b8;
+  pointer-events: none;
+  box-shadow: none;
+  opacity: 0.6;
+}

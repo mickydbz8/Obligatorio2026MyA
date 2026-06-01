@@ -1,36 +1,25 @@
 @model ZanganosSA.Models.Apiario
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalles del Apiario";
 }
 
-<h1>Details</h1>
-
-<div>
-    <h4>Apiario</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nombre)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nombre)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UbicacionGps)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UbicacionGps)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SeccionalPolicial)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SeccionalPolicial)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card shadow-sm p-4">
+            <h2 class="mb-4"><i class="bi bi-eye text-warning"></i> Detalles del Apiario</h2>
+            <dl class="row">
+                <dt class="col-sm-4 fw-bold">Nombre</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.Nombre)</dd>
+                <dt class="col-sm-4 fw-bold">Ubicación GPS</dt>
+                <dd class="col-sm-8"><i class="bi bi-pin-map text-muted"></i> @Html.DisplayFor(model => model.UbicacionGps)</dd>
+                <dt class="col-sm-4 fw-bold">Seccional Policial</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.SeccionalPolicial)</dd>
+            </dl>
+            <div class="d-flex gap-2 mt-3">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning fw-bold"><i class="bi bi-pencil"></i> Editar</a>
+                <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver al listado</a>
+            </div>
+        </div>
+    </div>
 </div>

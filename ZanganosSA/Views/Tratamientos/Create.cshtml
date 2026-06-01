@@ -1,55 +1,58 @@
 @model ZanganosSA.Models.Tratamiento
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Nuevo Tratamiento";
 }
 
-<h1>Create</h1>
-
-<h4>Tratamiento</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Medicamento" class="control-label"></label>
-                <input asp-for="Medicamento" class="form-control" />
-                <span asp-validation-for="Medicamento" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Dosis" class="control-label"></label>
-                <input asp-for="Dosis" class="form-control" />
-                <span asp-validation-for="Dosis" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FechaInicio" class="control-label"></label>
-                <input asp-for="FechaInicio" class="form-control" />
-                <span asp-validation-for="FechaInicio" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DuracionDias" class="control-label"></label>
-                <input asp-for="DuracionDias" class="form-control" />
-                <span asp-validation-for="DuracionDias" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Estado" class="control-label"></label>
-                <input asp-for="Estado" class="form-control" />
-                <span asp-validation-for="Estado" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ColmenaId" class="control-label"></label>
-                <select asp-for="ColmenaId" class ="form-control" asp-items="ViewBag.ColmenaId"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card shadow-sm p-4">
+            <h2 class="mb-4"><i class="bi bi-plus-circle text-warning"></i> Nuevo Tratamiento Sanitario</h2>
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                <div class="mb-3">
+                    <label asp-for="Medicamento" class="form-label fw-bold">Medicamento</label>
+                    <input asp-for="Medicamento" class="form-control" placeholder="Ej: Oxálico, Amitraz..." />
+                    <span asp-validation-for="Medicamento" class="text-danger small"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Dosis" class="form-label fw-bold">Dosis</label>
+                    <input asp-for="Dosis" class="form-control" placeholder="Ej: 50g, 2 tiras..." />
+                    <span asp-validation-for="Dosis" class="text-danger small"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="FechaInicio" class="form-label fw-bold">Fecha de Inicio</label>
+                    <input asp-for="FechaInicio" class="form-control" type="datetime-local" />
+                    <span asp-validation-for="FechaInicio" class="text-danger small"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="DuracionDias" class="form-label fw-bold">Duración (días)</label>
+                    <input asp-for="DuracionDias" class="form-control" type="number" min="1" />
+                    <span asp-validation-for="DuracionDias" class="text-danger small"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Estado" class="form-label fw-bold">Estado</label>
+                    <select asp-for="Estado" class="form-select">
+                        <option value="">-- Seleccionar estado --</option>
+                        <option>En Curso</option>
+                        <option>Finalizado</option>
+                        <option>Pendiente</option>
+                    </select>
+                    <span asp-validation-for="Estado" class="text-danger small"></span>
+                </div>
+                <div class="mb-4">
+                    <label asp-for="ColmenaId" class="form-label fw-bold">Colmena</label>
+                    <select asp-for="ColmenaId" class="form-select" asp-items="ViewBag.ColmenaId">
+                        <option value="">-- Seleccionar colmena --</option>
+                    </select>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-warning fw-bold"><i class="bi bi-save"></i> Guardar</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

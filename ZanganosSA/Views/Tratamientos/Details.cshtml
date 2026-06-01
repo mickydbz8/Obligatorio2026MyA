@@ -1,54 +1,31 @@
 @model ZanganosSA.Models.Tratamiento
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalles del Tratamiento";
 }
 
-<h1>Details</h1>
-
-<div>
-    <h4>Tratamiento</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Medicamento)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Medicamento)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Dosis)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Dosis)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaInicio)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaInicio)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DuracionDias)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DuracionDias)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Estado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Colmena)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Colmena.Identificador)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card shadow-sm p-4">
+            <h2 class="mb-4"><i class="bi bi-eye text-warning"></i> Detalles del Tratamiento</h2>
+            <dl class="row">
+                <dt class="col-sm-4 fw-bold">Medicamento</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.Medicamento)</dd>
+                <dt class="col-sm-4 fw-bold">Dosis</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.Dosis)</dd>
+                <dt class="col-sm-4 fw-bold">Fecha de Inicio</dt>
+                <dd class="col-sm-8">@Model.FechaInicio.ToString("dd/MM/yyyy")</dd>
+                <dt class="col-sm-4 fw-bold">Duración</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.DuracionDias) días</dd>
+                <dt class="col-sm-4 fw-bold">Estado</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.Estado)</dd>
+                <dt class="col-sm-4 fw-bold">Colmena</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.Colmena.Identificador)</dd>
+            </dl>
+            <div class="d-flex gap-2 mt-3">
+                <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning fw-bold"><i class="bi bi-pencil"></i> Editar</a>
+                <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver al listado</a>
+            </div>
+        </div>
+    </div>
 </div>

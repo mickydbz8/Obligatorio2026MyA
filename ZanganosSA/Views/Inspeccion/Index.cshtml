@@ -1,11 +1,11 @@
-@{
-    ViewData["Title"] = "Inspección Rápida de Campo (IA)";
+﻿@{
+    ViewData["Title"] = "InspecciÃ³n RÃ¡pida de Campo (IA)";
 }
 
 <div class="container mt-4">
     <div class="text-center mb-5">
         <h2 class="text-info fw-bold"><i class="bi bi-robot"></i> Asistente de Campo con IA</h2>
-        <p class="lead">Simulación de la interfaz Manos Libres y Visión Computacional para uso con traje de apicultor.</p>
+        <p class="lead">SimulaciÃ³n de la interfaz Manos Libres y VisiÃ³n Computacional para uso con traje de apicultor.</p>
     </div>
 
     @if (TempData["MensajeVoz"] != null)
@@ -31,7 +31,7 @@
                     <h1 class="display-1 text-primary mb-3"><i class="bi bi-mic"></i></h1>
                     <h4 class="card-title">Dictado de Voz</h4>
                     <p class="card-text text-muted mb-4">
-                        Toca el botón para simular que Matías está dictando observaciones sobre una colmena usando el micrófono de su móvil.
+                        Toca el botÃ³n para simular que MatÃ­as estÃ¡ dictando observaciones sobre una colmena usando el micrÃ³fono de su mÃ³vil.
                     </p>
                     <form asp-action="SimularVoz" method="post">
                         <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm">
@@ -46,13 +46,13 @@
             <div class="card shadow border-0 rounded-4">
                 <div class="card-body py-5">
                     <h1 class="display-1 text-warning mb-3"><i class="bi bi-camera"></i></h1>
-                    <h4 class="card-title">Análisis de Material</h4>
+                    <h4 class="card-title">AnÃ¡lisis de Material</h4>
                     <p class="card-text text-muted mb-4">
-                        Toca el botón para simular que la cámara analiza el estado de un cajón y genera un diagnóstico preventivo.
+                        Toca el botÃ³n para simular que la cÃ¡mara analiza el estado de un cajÃ³n y genera un diagnÃ³stico preventivo.
                     </p>
                     <form asp-action="SimularCamara" method="post">
                         <button type="submit" class="btn btn-warning btn-lg rounded-pill px-5 shadow-sm text-dark">
-                            <i class="bi bi-camera-fill"></i> Simular Análisis
+                            <i class="bi bi-camera-fill"></i> Simular AnÃ¡lisis
                         </button>
                     </form>
                 </div>
@@ -60,3 +60,4 @@
         </div>
     </div>
 </div>
+

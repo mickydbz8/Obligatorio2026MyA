@@ -184,3 +184,25 @@ p > a[href*="Create"]:hover {
   box-shadow: none;
   opacity: 0.6;
 }
+
+/* Also style all Back/Cancel buttons (btn-outline-secondary) as golden with black text */
+.btn-outline-secondary {
+  background-color: #f59e0b !important; /* Honey/Golden */
+  color: #000000 !important;
+  border: 1px solid #d97706 !important;
+  font-weight: 700 !important;
+  padding: 0.5rem 1.2rem !important;
+  border-radius: 0.5rem !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+}
+.btn-outline-secondary:hover {
+  background-color: #fbbf24 !important; /* Lighter golden on hover */
+  color: #000000 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.15) !important;
+}

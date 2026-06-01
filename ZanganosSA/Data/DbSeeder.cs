@@ -24,7 +24,8 @@ namespace ZanganosSA.Data
 
                 var trat1 = new Tratamiento { ColmenaId = colmena2.Id, Medicamento = "Oxálico", Dosis = "50g", FechaInicio = DateTime.Now.AddDays(-40), DuracionDias = 42, Estado = "En Curso" }; // A punto de vencer (faltan 2 días)
                 var trat2 = new Tratamiento { ColmenaId = colmena3.Id, Medicamento = "Amitraz", Dosis = "2 Tiras", FechaInicio = DateTime.Now.AddDays(-60), DuracionDias = 45, Estado = "En Curso" }; // Vencido (hace 15 días)
-                context.Tratamientos.AddRange(trat1, trat2);
+                var trat3 = new Tratamiento { ColmenaId = colmena1.Id, Medicamento = "Flumetrina", Dosis = "4 Tiras", FechaInicio = DateTime.Now.AddDays(-10), DuracionDias = 30, Estado = "En Curso" };
+                context.Tratamientos.AddRange(trat1, trat2, trat3);
                 context.SaveChanges();
             }
         }

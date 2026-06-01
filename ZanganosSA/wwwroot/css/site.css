@@ -67,10 +67,16 @@ body {
   box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.4);
 }
 .btn-warning {
-  background-color: #fbbf24;
-  border-color: #f59e0b;
-  color: var(--honey-dark);
-  font-weight: 600;
+  background-color: #fbbf24 !important;
+  border-color: #f59e0b !important;
+  color: #000000 !important; /* Force black text */
+  font-weight: 700 !important;
+  transition: all 0.2s ease;
+}
+.btn-warning:hover {
+  background-color: #f59e0b !important;
+  color: #000000 !important;
+  transform: translateY(-1px);
 }
 
 /* Table Styling Override */

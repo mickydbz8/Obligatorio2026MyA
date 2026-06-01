@@ -34,7 +34,7 @@
                         Toca el botón para simular que Matías está dictando observaciones sobre una colmena usando el micrófono de su móvil.
                     </p>
                     <form asp-action="SimularVoz" method="post">
-                        <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm">
+                        <button type="submit" class="btn btn-warning btn-lg rounded-pill px-5 shadow-sm text-dark fw-bold">
                             <i class="bi bi-play-circle-fill"></i> Simular Dictado
                         </button>
                     </form>
@@ -51,12 +51,16 @@
                         Toca el botón para simular que la cámara analiza el estado de un cajón y genera un diagnóstico preventivo.
                     </p>
                     <form asp-action="SimularCamara" method="post">
-                        <button type="submit" class="btn btn-warning btn-lg rounded-pill px-5 shadow-sm text-dark">
+                        <button type="submit" class="btn btn-warning btn-lg rounded-pill px-5 shadow-sm text-dark fw-bold">
                             <i class="bi bi-camera-fill"></i> Simular Análisis
                         </button>
                     </form>
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="text-center mt-5">
+        <a href="/" class="btn-paginado-dorado"><i class="bi bi-arrow-left"></i> Volver al Inicio</a>
     </div>
 </div>

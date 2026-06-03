@@ -22,7 +22,7 @@ namespace ZanganosSA.Controllers
         // GET: Tratamientos
         public async Task<IActionResult> Index(int page = 1)
         {
-            int pageSize = 2;
+            int pageSize = 10;
             var query = _context.Tratamientos.Include(t => t.Colmena);
             int totalItems = await query.CountAsync();
             int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
@@ -37,6 +37,20 @@ namespace ZanganosSA.Controllers
 
             var items = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
             return View(items);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MarcarCompletado(int id)
+        {
+            var tratamiento = await _context.Tratamientos.FindAsync(id);
+            if (tratamiento != null)
+            {
+                tratamiento.Estado = "Finalizado";
+                _context.Update(tratamiento);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction("Index", "Home");
         }
 
         // GET: Tratamientos/Details/5

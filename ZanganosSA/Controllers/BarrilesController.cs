@@ -22,7 +22,7 @@ namespace ZanganosSA.Controllers
         // GET: Barriles
         public async Task<IActionResult> Index(int page = 1)
         {
-            int pageSize = 2;
+            int pageSize = 10;
             var query = _context.Barriles.Include(b => b.Cosecha);
             int totalItems = await query.CountAsync();
             int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);

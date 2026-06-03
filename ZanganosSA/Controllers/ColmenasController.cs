@@ -22,7 +22,7 @@ namespace ZanganosSA.Controllers
         // GET: Colmenas
         public async Task<IActionResult> Index(int page = 1)
         {
-            int pageSize = 2;
+            int pageSize = 10;
             var query = _context.Colmenas.Include(c => c.Apiario);
             int totalItems = await query.CountAsync();
             int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
@@ -49,6 +49,9 @@ namespace ZanganosSA.Controllers
 
             var colmena = await _context.Colmenas
                 .Include(c => c.Apiario)
+                .Include(c => c.Tratamientos)
+                .Include(c => c.ColmenaCosechas)
+                    .ThenInclude(cc => cc.Cosecha)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (colmena == null)
             {

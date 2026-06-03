@@ -1,0 +1,9 @@
+@{
+    ViewData["Title"] = "Probar conexión";
+}
+<h1 style="font-family: 'Outfit', sans-serif; color:#2b2b2b;">Probar conexión</h1>
+@if (ViewBag.Error != null) {
+    <div style="color:#ff4444; font-weight:bold;">@ViewBag.Error</div>
+} else {
+    <p>SELECT 1 devolvió: <strong style="color:#0066ff;">@ViewBag.Resultado</strong></p>
+}

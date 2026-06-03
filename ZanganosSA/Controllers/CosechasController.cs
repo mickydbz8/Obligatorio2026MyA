@@ -22,7 +22,7 @@ namespace ZanganosSA.Controllers
         // GET: Cosechas
         public async Task<IActionResult> Index(int page = 1)
         {
-            int pageSize = 2;
+            int pageSize = 10;
             var query = _context.Cosechas.Include(c => c.Apiario);
             int totalItems = await query.CountAsync();
             int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
@@ -49,6 +49,9 @@ namespace ZanganosSA.Controllers
 
             var cosecha = await _context.Cosechas
                 .Include(c => c.Apiario)
+                .Include(c => c.ColmenaCosechas)
+                    .ThenInclude(cc => cc.Colmena)
+                .Include(c => c.Barriles)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (cosecha == null)
             {
@@ -62,23 +65,37 @@ namespace ZanganosSA.Controllers
         public IActionResult Create()
         {
             ViewData["ApiarioId"] = new SelectList(_context.Apiarios, "Id", "Nombre");
+            ViewBag.Colmenas = _context.Colmenas.OrderBy(c => c.Identificador).ToList();
             return View();
         }
 
         // POST: Cosechas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FechaCosecha,PesoTotalEstimado,ApiarioId")] Cosecha cosecha)
+        public async Task<IActionResult> Create([Bind("Id,FechaCosecha,PesoTotalEstimado,ApiarioId")] Cosecha cosecha, int[] selectedColmenas)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(cosecha);
                 await _context.SaveChangesAsync();
+
+                if (selectedColmenas != null)
+                {
+                    foreach (var colmenaId in selectedColmenas)
+                    {
+                        var colmenaCosecha = new ColmenaCosecha
+                        {
+                            CosechaId = cosecha.Id,
+                            ColmenaId = colmenaId
+                        };
+                        _context.Add(colmenaCosecha);
+                    }
+                    await _context.SaveChangesAsync();
+                }
                 return RedirectToAction(nameof(Index));
             }
             ViewData["ApiarioId"] = new SelectList(_context.Apiarios, "Id", "Nombre", cosecha.ApiarioId);
+            ViewBag.Colmenas = _context.Colmenas.OrderBy(c => c.Identificador).ToList();
             return View(cosecha);
         }
 
@@ -90,21 +107,23 @@ namespace ZanganosSA.Controllers
                 return NotFound();
             }
 
-            var cosecha = await _context.Cosechas.FindAsync(id);
+            var cosecha = await _context.Cosechas
+                .Include(c => c.ColmenaCosechas)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (cosecha == null)
             {
                 return NotFound();
             }
             ViewData["ApiarioId"] = new SelectList(_context.Apiarios, "Id", "Nombre", cosecha.ApiarioId);
+            ViewBag.Colmenas = _context.Colmenas.OrderBy(c => c.Identificador).ToList();
+            ViewBag.SelectedColmenas = cosecha.ColmenaCosechas.Select(cc => cc.ColmenaId).ToList();
             return View(cosecha);
         }
 
         // POST: Cosechas/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FechaCosecha,PesoTotalEstimado,ApiarioId")] Cosecha cosecha)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FechaCosecha,PesoTotalEstimado,ApiarioId")] Cosecha cosecha, int[] selectedColmenas)
         {
             if (id != cosecha.Id)
             {
@@ -117,6 +136,24 @@ namespace ZanganosSA.Controllers
                 {
                     _context.Update(cosecha);
                     await _context.SaveChangesAsync();
+
+                    var existingAssociations = _context.Set<ColmenaCosecha>().Where(cc => cc.CosechaId == cosecha.Id);
+                    _context.RemoveRange(existingAssociations);
+                    await _context.SaveChangesAsync();
+
+                    if (selectedColmenas != null)
+                    {
+                        foreach (var colmenaId in selectedColmenas)
+                        {
+                            var colmenaCosecha = new ColmenaCosecha
+                            {
+                                CosechaId = cosecha.Id,
+                                ColmenaId = colmenaId
+                            };
+                            _context.Add(colmenaCosecha);
+                        }
+                        await _context.SaveChangesAsync();
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -132,6 +169,8 @@ namespace ZanganosSA.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["ApiarioId"] = new SelectList(_context.Apiarios, "Id", "Nombre", cosecha.ApiarioId);
+            ViewBag.Colmenas = _context.Colmenas.OrderBy(c => c.Identificador).ToList();
+            ViewBag.SelectedColmenas = selectedColmenas?.ToList() ?? new List<int>();
             return View(cosecha);
         }
 

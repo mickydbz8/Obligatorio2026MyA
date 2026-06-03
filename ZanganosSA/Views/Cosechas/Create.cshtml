@@ -10,25 +10,51 @@
             <h2 class="mb-4"><i class="bi bi-plus-circle text-warning"></i> Nueva Cosecha</h2>
             <form asp-action="Create">
                 <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                
                 <div class="mb-3">
                     <label asp-for="FechaCosecha" class="form-label fw-bold">Fecha de Cosecha</label>
                     <input asp-for="FechaCosecha" class="form-control" type="datetime-local" />
                     <span asp-validation-for="FechaCosecha" class="text-danger small"></span>
                 </div>
+                
                 <div class="mb-3">
                     <label asp-for="PesoTotalEstimado" class="form-label fw-bold">Peso Total Estimado (kg)</label>
-                    <input asp-for="PesoTotalEstimado" class="form-control" type="number" step="0.1" />
+                    <input asp-for="PesoTotalEstimado" class="form-control" type="number" step="0.1" placeholder="Ej: 45.5" />
                     <span asp-validation-for="PesoTotalEstimado" class="text-danger small"></span>
                 </div>
-                <div class="mb-4">
-                    <label asp-for="ApiarioId" class="form-label fw-bold">Apiario</label>
+                
+                <div class="mb-3">
+                    <label asp-for="ApiarioId" class="form-label fw-bold">Apiario de Origen</label>
                     <select asp-for="ApiarioId" class="form-select" asp-items="ViewBag.ApiarioId">
                         <option value="">-- Seleccionar apiario --</option>
                     </select>
+                    <span asp-validation-for="ApiarioId" class="text-danger small"></span>
                 </div>
+
+                <!-- Colmenas a cosechar (Filtrado Dinámico por JS) -->
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Colmenas Cosechadas</label>
+                    <div id="colmenas-container" class="border rounded p-3 bg-white" style="max-height: 220px; overflow-y: auto;">
+                        <p id="no-apiario-msg" class="text-muted small mb-0"><i class="bi bi-info-circle text-warning"></i> Por favor, selecciona un apiario para ver sus colmenas.</p>
+                        @if (ViewBag.Colmenas != null)
+                        {
+                            foreach (var colmena in (List<ZanganosSA.Models.Colmena>)ViewBag.Colmenas)
+                            {
+                                <div class="form-check colmena-option mb-2" data-apiario="@colmena.ApiarioId" style="display: none;">
+                                    <input class="form-check-input colmena-checkbox" type="checkbox" name="selectedColmenas" value="@colmena.Id" id="colmena_@colmena.Id">
+                                    <label class="form-check-label" for="colmena_@colmena.Id">
+                                        <strong>@colmena.Identificador</strong> 
+                                        <span class="text-muted small">(Estado: @colmena.EstadoGeneral | Reina: @colmena.EstadoReina)</span>
+                                    </label>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-warning fw-bold"><i class="bi bi-save"></i> Guardar</button>
-                    <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
+                    <button type="submit" class="btn btn-warning fw-bold"><i class="bi bi-save"></i> Registrar Cosecha</button>
+                    <a asp-action="Index" class="btn-paginado-dorado"><i class="bi bi-arrow-left"></i> Volver</a>
                 </div>
             </form>
         </div>
@@ -37,4 +63,47 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var apiarioSelect = document.getElementById("ApiarioId");
+            var colmenaOptions = document.querySelectorAll(".colmena-option");
+            var noApiarioMsg = document.getElementById("no-apiario-msg");
+
+            function filterColmenas() {
+                var selectedApiario = apiarioSelect.value;
+                var visibleCount = 0;
+
+                if (!selectedApiario) {
+                    noApiarioMsg.innerHTML = '<i class="bi bi-info-circle text-warning"></i> Por favor, selecciona un apiario para ver sus colmenas.';
+                    noApiarioMsg.style.display = "block";
+                    colmenaOptions.forEach(function (opt) {
+                        opt.style.display = "none";
+                        opt.querySelector(".colmena-checkbox").checked = false;
+                    });
+                    return;
+                }
+
+                colmenaOptions.forEach(function (opt) {
+                    if (opt.getAttribute("data-apiario") === selectedApiario) {
+                        opt.style.display = "block";
+                        visibleCount++;
+                    } else {
+                        opt.style.display = "none";
+                        opt.querySelector(".colmena-checkbox").checked = false;
+                    }
+                });
+
+                if (visibleCount === 0) {
+                    noApiarioMsg.innerHTML = '<i class="bi bi-exclamation-triangle text-danger"></i> No hay colmenas registradas en este apiario.';
+                    noApiarioMsg.style.display = "block";
+                } else {
+                    noApiarioMsg.style.display = "none";
+                }
+            }
+
+            apiarioSelect.addEventListener("change", filterColmenas);
+            filterColmenas(); // initial run
+        });
+    </script>
 }

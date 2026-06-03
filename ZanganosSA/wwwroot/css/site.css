@@ -87,11 +87,13 @@ body {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 .table thead th {
+  font-weight: 700;
+  padding: 1rem;
+}
+.table-honey thead th {
   background-color: var(--honey-light);
   color: var(--honey-dark);
-  font-weight: 700;
   border-bottom: 2px solid var(--honey-primary);
-  padding: 1rem;
 }
 .table tbody td {
   vertical-align: middle;

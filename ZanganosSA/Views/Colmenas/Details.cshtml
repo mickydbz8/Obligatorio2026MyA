@@ -5,25 +5,115 @@
 }
 
 <div class="row justify-content-center">
-    <div class="col-md-7">
-        <div class="card shadow-sm p-4">
-            <h2 class="mb-4"><i class="bi bi-eye text-warning"></i> Detalles de Colmena</h2>
-            <dl class="row">
-                <dt class="col-sm-4 fw-bold">Identificador</dt>
-                <dd class="col-sm-8">@Html.DisplayFor(model => model.Identificador)</dd>
-                <dt class="col-sm-4 fw-bold">Estado General</dt>
-                <dd class="col-sm-8">@Html.DisplayFor(model => model.EstadoGeneral)</dd>
-                <dt class="col-sm-4 fw-bold">Estado de la Reina</dt>
-                <dd class="col-sm-8">@Html.DisplayFor(model => model.EstadoReina)</dd>
-                <dt class="col-sm-4 fw-bold">Última Inspección</dt>
-                <dd class="col-sm-8">@Model.UltimaInspeccion.ToString("dd/MM/yyyy HH:mm")</dd>
-                <dt class="col-sm-4 fw-bold">Apiario</dt>
-                <dd class="col-sm-8">@Html.DisplayFor(model => model.Apiario.Nombre)</dd>
-            </dl>
-            <div class="d-flex gap-2 mt-3">
-                <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning fw-bold"><i class="bi bi-pencil"></i> Editar</a>
-                <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver al listado</a>
+    <div class="col-md-9">
+        <div class="card shadow-sm p-4 mb-4">
+            <h2 class="mb-4 text-warning"><i class="bi bi-box-seam"></i> Colmena: @Model.Identificador</h2>
+            
+            <div class="row mb-3">
+                <div class="col-md-6 mb-3">
+                    <p class="mb-1 fw-bold">Estado General:</p>
+                    @{
+                        string badgeClass = Model.EstadoGeneral == "Fuerte" ? "bg-success" : (Model.EstadoGeneral == "Débil" ? "bg-danger" : "bg-warning text-dark");
+                    }
+                    <span class="badge @badgeClass fs-6">@Model.EstadoGeneral</span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <p class="mb-1 fw-bold">Estado de la Reina:</p>
+                    <p class="fs-6 text-muted"><i class="bi bi-activity text-warning"></i> @Model.EstadoReina</p>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1 fw-bold">Fecha de Última Inspección:</p>
+                    <p class="fs-6 text-muted"><i class="bi bi-calendar-event text-warning"></i> @Model.UltimaInspeccion.ToString("dd/MM/yyyy HH:mm")</p>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1 fw-bold">Apiario de Pertenencia:</p>
+                    <p class="fs-6 text-muted"><i class="bi bi-geo-alt text-warning"></i> @Model.Apiario?.Nombre</p>
+                </div>
             </div>
+
+            <div class="d-flex gap-2">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning fw-bold"><i class="bi bi-pencil"></i> Editar Colmena</a>
+                <a asp-action="Index" class="btn-paginado-dorado"><i class="bi bi-arrow-left"></i> Volver al listado</a>
+            </div>
+        </div>
+
+        <!-- Historial de Tratamientos Sanitarios -->
+        <div class="card shadow-sm p-4 mb-4">
+            <h3 class="mb-3 text-warning"><i class="bi bi-heart-pulse-fill"></i> Historial de Tratamientos Sanitarios (@Model.Tratamientos.Count)</h3>
+            @if (Model.Tratamientos.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Medicamento</th>
+                                <th>Dosis</th>
+                                <th>Fecha Inicio</th>
+                                <th>Duración (días)</th>
+                                <th>Estado</th>
+                                <th class="text-center">Detalles</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var trat in Model.Tratamientos.OrderByDescending(t => t.FechaInicio))
+                            {
+                                var tratBadge = trat.Estado == "En Curso" ? "bg-warning text-dark" : (trat.Estado == "Finalizado" ? "bg-success" : "bg-secondary");
+                                <tr>
+                                    <td><strong>@trat.Medicamento</strong></td>
+                                    <td>@trat.Dosis</td>
+                                    <td>@trat.FechaInicio.ToString("dd/MM/yyyy")</td>
+                                    <td>@trat.DuracionDias días</td>
+                                    <td><span class="badge @tratBadge">@trat.Estado</span></td>
+                                    <td class="text-center">
+                                        <a asp-controller="Tratamientos" asp-action="Details" asp-route-id="@trat.Id" class="btn btn-sm btn-link text-warning p-0 fw-bold">Ver</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted mb-0">Esta colmena no tiene tratamientos sanitarios registrados.</p>
+            }
+        </div>
+
+        <!-- Cosechas asociadas -->
+        <div class="card shadow-sm p-4">
+            <h3 class="mb-3 text-warning"><i class="bi bi-basket-fill"></i> Cosechas de esta Colmena (@Model.ColmenaCosechas.Count)</h3>
+            @if (Model.ColmenaCosechas.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Cosecha N°</th>
+                                <th>Fecha de Cosecha</th>
+                                <th>Peso Total de la Cosecha</th>
+                                <th class="text-center">Detalles</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var cc in Model.ColmenaCosechas)
+                            {
+                                <tr>
+                                    <td>#@cc.Cosecha?.Id</td>
+                                    <td>@cc.Cosecha?.FechaCosecha.ToString("dd/MM/yyyy")</td>
+                                    <td><strong>@cc.Cosecha?.PesoTotalEstimado kg</strong></td>
+                                    <td class="text-center">
+                                        <a asp-controller="Cosechas" asp-action="Details" asp-route-id="@cc.CosechaId" class="btn btn-sm btn-link text-warning p-0 fw-bold">Ver Cosecha</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted mb-0">Esta colmena no ha sido partícipe de ninguna cosecha registrada todavía.</p>
+            }
         </div>
     </div>
 </div>

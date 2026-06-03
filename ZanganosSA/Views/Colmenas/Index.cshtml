@@ -4,70 +4,72 @@
     ViewData["Title"] = "Colmenas";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h1><i class="bi bi-box-seam text-warning"></i> Colmenas</h1>
-    <a asp-action="Create" class="btn btn-warning fw-bold"><i class="bi bi-plus-circle"></i> Nueva Colmena</a>
-</div>
-
-<div class="table-responsive">
-<table class="table table-hover align-middle">
-    <thead>
-        <tr>
-            <th>Identificador</th>
-            <th>Estado General</th>
-            <th>Estado de Reina</th>
-            <th>Última Inspección</th>
-            <th>Apiario</th>
-            <th class="text-center">Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td><strong>@Html.DisplayFor(modelItem => item.Identificador)</strong></td>
-                <td>
-                    @{
-                        string badgeClass = item.EstadoGeneral == "Fuerte" ? "bg-success" : (item.EstadoGeneral == "Débil" ? "bg-danger" : "bg-warning text-dark");
-                    }
-                    <span class="badge @badgeClass">@Html.DisplayFor(modelItem => item.EstadoGeneral)</span>
-                </td>
-                <td>@Html.DisplayFor(modelItem => item.EstadoReina)</td>
-                <td>@item.UltimaInspeccion.ToString("dd/MM/yyyy")</td>
-                <td><i class="bi bi-geo-alt text-muted"></i> @Html.DisplayFor(modelItem => item.Apiario.Nombre)</td>
-                <td class="text-center">
-                    <a asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil"></i> Editar</a>
-                    <a asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-eye"></i> Detalles</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash"></i> Eliminar</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-</div>
-
-<div class="d-flex justify-content-between align-items-center mt-4">
-    <div>
-        <span class="text-muted small">Página @ViewBag.CurrentPage de @(ViewBag.TotalPages == 0 ? 1 : ViewBag.TotalPages)</span>
+<div class="card shadow-sm p-4 mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0 text-warning"><i class="bi bi-box-seam"></i> Colmenas</h2>
+        <a asp-action="Create" class="btn btn-warning fw-bold"><i class="bi bi-plus-circle"></i> Nueva Colmena</a>
     </div>
-    <div class="d-flex gap-2">
-        @if (ViewBag.HasPreviousPage)
-        {
-            <a href="?page=@(ViewBag.CurrentPage - 1)" class="btn-paginado-dorado"><i class="bi bi-arrow-left"></i> Anterior</a>
-        }
-        else
-        {
-            <span class="btn-paginado-dorado disabled"><i class="bi bi-arrow-left"></i> Anterior</span>
-        }
 
-        @if (ViewBag.HasNextPage)
-        {
-            <a href="?page=@(ViewBag.CurrentPage + 1)" class="btn-paginado-dorado">Siguiente <i class="bi bi-arrow-right"></i></a>
-        }
-        else
-        {
-            <span class="btn-paginado-dorado disabled">Siguiente <i class="bi bi-arrow-right"></i></span>
-        }
+    <div class="table-responsive">
+        <table class="table table-hover align-middle table-honey">
+            <thead>
+                <tr>
+                    <th>Identificador</th>
+                    <th>Estado General</th>
+                    <th>Estado de Reina</th>
+                    <th>Última Inspección</th>
+                    <th>Apiario</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td><strong>@Html.DisplayFor(modelItem => item.Identificador)</strong></td>
+                        <td>
+                            @{
+                                string badgeClass = item.EstadoGeneral == "Fuerte" ? "bg-success" : (item.EstadoGeneral == "Débil" ? "bg-danger" : "bg-warning text-dark");
+                            }
+                            <span class="badge @badgeClass">@Html.DisplayFor(modelItem => item.EstadoGeneral)</span>
+                        </td>
+                        <td>@Html.DisplayFor(modelItem => item.EstadoReina)</td>
+                        <td>@item.UltimaInspeccion.ToString("dd/MM/yyyy")</td>
+                        <td><i class="bi bi-geo-alt text-muted"></i> @Html.DisplayFor(modelItem => item.Apiario.Nombre)</td>
+                        <td class="text-center">
+                            <a asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil"></i> Editar</a>
+                            <a asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-eye"></i> Detalles</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash"></i> Eliminar</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <div>
+            <span class="text-muted small">Página @ViewBag.CurrentPage de @(ViewBag.TotalPages == 0 ? 1 : ViewBag.TotalPages)</span>
+        </div>
+        <div class="d-flex gap-2">
+            @if (ViewBag.HasPreviousPage)
+            {
+                <a href="?page=@(ViewBag.CurrentPage - 1)" class="btn-paginado-dorado"><i class="bi bi-arrow-left"></i> Anterior</a>
+            }
+            else
+            {
+                <span class="btn-paginado-dorado disabled"><i class="bi bi-arrow-left"></i> Anterior</span>
+            }
+
+            @if (ViewBag.HasNextPage)
+            {
+                <a href="?page=@(ViewBag.CurrentPage + 1)" class="btn-paginado-dorado">Siguiente <i class="bi bi-arrow-right"></i></a>
+            }
+            else
+            {
+                <span class="btn-paginado-dorado disabled">Siguiente <i class="bi bi-arrow-right"></i></span>
+            }
+        </div>
     </div>
 </div>
 

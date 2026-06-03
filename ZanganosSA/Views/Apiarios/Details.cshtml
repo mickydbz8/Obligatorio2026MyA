@@ -5,21 +5,89 @@
 }
 
 <div class="row justify-content-center">
-    <div class="col-md-7">
-        <div class="card shadow-sm p-4">
-            <h2 class="mb-4"><i class="bi bi-eye text-warning"></i> Detalles del Apiario</h2>
-            <dl class="row">
-                <dt class="col-sm-4 fw-bold">Nombre</dt>
-                <dd class="col-sm-8">@Html.DisplayFor(model => model.Nombre)</dd>
-                <dt class="col-sm-4 fw-bold">Ubicación GPS</dt>
-                <dd class="col-sm-8"><i class="bi bi-pin-map text-muted"></i> @Html.DisplayFor(model => model.UbicacionGps)</dd>
-                <dt class="col-sm-4 fw-bold">Seccional Policial</dt>
-                <dd class="col-sm-8">@Html.DisplayFor(model => model.SeccionalPolicial)</dd>
-            </dl>
-            <div class="d-flex gap-2 mt-3">
-                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning fw-bold"><i class="bi bi-pencil"></i> Editar</a>
-                <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver al listado</a>
+    <div class="col-md-9">
+        <div class="card shadow-sm p-4 mb-4">
+            <h2 class="mb-4 text-warning"><i class="bi bi-geo-alt-fill"></i> Detalles del Apiario: @Model.Nombre</h2>
+            
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <p class="mb-1 fw-bold">Ubicación GPS:</p>
+                    <p class="fs-5 text-muted"><i class="bi bi-pin-map text-warning"></i> @Model.UbicacionGps</p>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1 fw-bold">Seccional Policial:</p>
+                    <p class="fs-5 text-muted"><i class="bi bi-shield-check text-warning"></i> @Model.SeccionalPolicial</p>
+                </div>
             </div>
+
+            <div class="d-flex gap-2">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning fw-bold"><i class="bi bi-pencil"></i> Editar Apiario</a>
+                <a asp-action="Index" class="btn-paginado-dorado"><i class="bi bi-arrow-left"></i> Volver al listado</a>
+            </div>
+        </div>
+
+        <!-- Colmenas en este Apiario -->
+        <div class="card shadow-sm p-4 mb-4">
+            <h3 class="mb-3 text-warning"><i class="bi bi-box-seam"></i> Colmenas en este Apiario (@Model.Colmenas.Count)</h3>
+            @if (Model.Colmenas.Any())
+            {
+                <div class="row">
+                    @foreach (var colmena in Model.Colmenas)
+                    {
+                        var badgeClass = colmena.EstadoGeneral == "Fuerte" ? "bg-success" : (colmena.EstadoGeneral == "Débil" ? "bg-danger" : "bg-warning text-dark");
+                        <div class="col-md-4 mb-3">
+                            <div class="border rounded p-3 h-100 bg-white shadow-xs">
+                                <h5 class="fw-bold">@colmena.Identificador</h5>
+                                <p class="mb-1 small">Estado General: <span class="badge @badgeClass">@colmena.EstadoGeneral</span></p>
+                                <p class="mb-1 small">Reina: <span class="text-muted">@colmena.EstadoReina</span></p>
+                                <p class="mb-0 small text-muted">U. Insp: @colmena.UltimaInspeccion.ToString("dd/MM/yyyy")</p>
+                                <div class="mt-2 text-end">
+                                    <a asp-controller="Colmenas" asp-action="Details" asp-route-id="@colmena.Id" class="btn btn-sm btn-link text-warning p-0 fw-bold">Ver Detalles <i class="bi bi-chevron-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="text-muted mb-0">No hay colmenas registradas en este apiario.</p>
+            }
+        </div>
+
+        <!-- Cosechas en este Apiario -->
+        <div class="card shadow-sm p-4">
+            <h3 class="mb-3 text-warning"><i class="bi bi-basket-fill"></i> Cosechas de Miel (@Model.Cosechas.Count)</h3>
+            @if (Model.Cosechas.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Fecha de Cosecha</th>
+                                <th>Peso Total Estimado</th>
+                                <th class="text-center">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var cose in Model.Cosechas.OrderByDescending(c => c.FechaCosecha))
+                            {
+                                <tr>
+                                    <td>@cose.FechaCosecha.ToString("dd/MM/yyyy")</td>
+                                    <td><strong>@cose.PesoTotalEstimado kg</strong></td>
+                                    <td class="text-center">
+                                        <a asp-controller="Cosechas" asp-action="Details" asp-route-id="@cose.Id" class="btn btn-sm btn-link text-warning p-0 fw-bold">Ver Cosecha</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted mb-0">No se han registrado cosechas en este apiario todavía.</p>
+            }
         </div>
     </div>
 </div>

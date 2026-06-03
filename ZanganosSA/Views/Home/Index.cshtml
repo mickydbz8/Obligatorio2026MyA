@@ -37,14 +37,22 @@
                                 <strong>Medicamento:</strong> @trat.Medicamento 
                                 (Fin: @fechaFin.ToShortDateString())
                             </span>
-                            @if (diasRestantes < 0)
-                            {
-                                <span class="badge bg-danger rounded-pill">VENCIDO (@Math.Abs(diasRestantes) días)</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-warning text-dark rounded-pill">Faltan @diasRestantes días</span>
-                            }
+                            <div class="d-flex align-items-center gap-3">
+                                @if (diasRestantes < 0)
+                                {
+                                    <span class="badge bg-danger rounded-pill">VENCIDO (@Math.Abs(diasRestantes) días)</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark rounded-pill">Faltan @diasRestantes días</span>
+                                }
+                                <form asp-controller="Tratamientos" asp-action="MarcarCompletado" method="post" class="m-0 p-0">
+                                    <input type="hidden" name="id" value="@trat.Id" />
+                                    <button type="submit" class="btn btn-sm btn-success rounded-pill shadow-sm" title="Marcar como finalizado y archivar">
+                                        <i class="bi bi-check-circle-fill"></i> Completar
+                                    </button>
+                                </form>
+                            </div>
                         </li>
                     }
                 }
@@ -60,6 +68,9 @@
                     <span class="badge bg-info text-dark rounded-pill">Sugerencia</span>
                 </li>
             </ul>
+            <div class="card-footer bg-light text-end">
+                <a asp-controller="Tratamientos" asp-action="Index" class="btn btn-sm btn-outline-danger"><i class="bi bi-clock-history"></i> Ver Historial de Tratamientos (Archivo)</a>
+            </div>
         </div>
     </div>
 </div>

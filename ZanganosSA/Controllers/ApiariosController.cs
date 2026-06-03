@@ -22,7 +22,7 @@ namespace ZanganosSA.Controllers
         // GET: Apiarios
         public async Task<IActionResult> Index(int page = 1)
         {
-            int pageSize = 2;
+            int pageSize = 10;
             var query = _context.Apiarios;
             int totalItems = await query.CountAsync();
             int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
@@ -48,6 +48,8 @@ namespace ZanganosSA.Controllers
             }
 
             var apiario = await _context.Apiarios
+                .Include(a => a.Colmenas)
+                .Include(a => a.Cosechas)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (apiario == null)
             {

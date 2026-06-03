@@ -5,21 +5,98 @@
 }
 
 <div class="row justify-content-center">
-    <div class="col-md-7">
-        <div class="card shadow-sm p-4">
-            <h2 class="mb-4"><i class="bi bi-eye text-warning"></i> Detalles de Cosecha</h2>
-            <dl class="row">
-                <dt class="col-sm-4 fw-bold">Fecha de Cosecha</dt>
-                <dd class="col-sm-8">@Model.FechaCosecha.ToString("dd/MM/yyyy")</dd>
-                <dt class="col-sm-4 fw-bold">Peso Total Estimado</dt>
-                <dd class="col-sm-8">@Html.DisplayFor(model => model.PesoTotalEstimado) kg</dd>
-                <dt class="col-sm-4 fw-bold">Apiario</dt>
-                <dd class="col-sm-8">@Html.DisplayFor(model => model.Apiario.Nombre)</dd>
-            </dl>
-            <div class="d-flex gap-2 mt-3">
-                <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning fw-bold"><i class="bi bi-pencil"></i> Editar</a>
-                <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver al listado</a>
+    <div class="col-md-9">
+        <div class="card shadow-sm p-4 mb-4">
+            <h2 class="mb-4 text-warning"><i class="bi bi-basket-fill"></i> Detalles de Cosecha N° @Model.Id</h2>
+            
+            <div class="row mb-3">
+                <div class="col-md-6 mb-3">
+                    <p class="mb-1 fw-bold">Fecha de Cosecha:</p>
+                    <p class="fs-5 text-muted"><i class="bi bi-calendar-event text-warning"></i> @Model.FechaCosecha.ToString("dd/MM/yyyy")</p>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <p class="mb-1 fw-bold">Peso Total Estimado:</p>
+                    <p class="fs-5 text-muted"><i class="bi bi-speedometer2 text-warning"></i> <strong>@Model.PesoTotalEstimado kg</strong></p>
+                </div>
+                <div class="col-md-12">
+                    <p class="mb-1 fw-bold">Apiario de Origen:</p>
+                    <p class="fs-5 text-muted"><i class="bi bi-geo-alt text-warning"></i> @Model.Apiario?.Nombre</p>
+                </div>
             </div>
+
+            <div class="d-flex gap-2 mt-3">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning fw-bold"><i class="bi bi-pencil"></i> Editar Cosecha</a>
+                <a asp-action="Index" class="btn-paginado-dorado"><i class="bi bi-arrow-left"></i> Volver al listado</a>
+            </div>
+        </div>
+
+        <!-- Colmenas Cosechadas -->
+        <div class="card shadow-sm p-4 mb-4">
+            <h3 class="mb-3 text-warning"><i class="bi bi-box-seam"></i> Colmenas Participantes en esta Cosecha (@Model.ColmenaCosechas.Count)</h3>
+            @if (Model.ColmenaCosechas.Any())
+            {
+                <div class="row">
+                    @foreach (var cc in Model.ColmenaCosechas)
+                    {
+                        var colmena = cc.Colmena;
+                        if (colmena != null)
+                        {
+                            var colmenaBadge = colmena.EstadoGeneral == "Fuerte" ? "bg-success" : (colmena.EstadoGeneral == "Débil" ? "bg-danger" : "bg-warning text-dark");
+                            <div class="col-md-4 mb-3">
+                                <div class="border rounded p-3 h-100 bg-white">
+                                    <h5 class="fw-bold">@colmena.Identificador</h5>
+                                    <p class="mb-1 small">Estado: <span class="badge @colmenaBadge">@colmena.EstadoGeneral</span></p>
+                                    <p class="mb-0 small">Reina: <span class="text-muted">@colmena.EstadoReina</span></p>
+                                    <div class="mt-2 text-end">
+                                        <a asp-controller="Colmenas" asp-action="Details" asp-route-id="@colmena.Id" class="btn btn-sm btn-link text-warning p-0 fw-bold">Ver Colmena <i class="bi bi-chevron-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="text-muted mb-0">No se registraron colmenas individuales específicas para esta cosecha.</p>
+            }
+        </div>
+
+        <!-- Barriles de la Cosecha -->
+        <div class="card shadow-sm p-4">
+            <h3 class="mb-3 text-warning"><i class="bi bi-archive-fill"></i> Barriles Producidos (@Model.Barriles.Count)</h3>
+            @if (Model.Barriles.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Código Lote</th>
+                                <th>Fecha de Envasado</th>
+                                <th>Peso Neto</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var barril in Model.Barriles.OrderByDescending(b => b.FechaEnvasado))
+                            {
+                                <tr>
+                                    <td><strong>@barril.CodigoLote</strong></td>
+                                    <td>@barril.FechaEnvasado.ToString("dd/MM/yyyy")</td>
+                                    <td>@barril.PesoNeto kg</td>
+                                    <td class="text-center">
+                                        <a asp-controller="Barriles" asp-action="Details" asp-route-id="@barril.Id" class="btn btn-sm btn-link text-warning p-0 fw-bold">Ver Barril</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted mb-0">Esta cosecha aún no tiene barriles de miel registrados.</p>
+            }
         </div>
     </div>
 </div>

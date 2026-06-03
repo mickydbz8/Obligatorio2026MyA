@@ -4,61 +4,63 @@
     ViewData["Title"] = "Apiarios";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h1><i class="bi bi-geo-alt-fill text-warning"></i> Apiarios</h1>
-    <a asp-action="Create" class="btn btn-warning fw-bold"><i class="bi bi-plus-circle"></i> Nuevo Apiario</a>
-</div>
-
-<div class="table-responsive">
-<table class="table table-hover align-middle">
-    <thead>
-        <tr>
-            <th>Nombre del Apiario</th>
-            <th>Ubicación (GPS)</th>
-            <th>Seccional Policial</th>
-            <th class="text-center">Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td><strong>@Html.DisplayFor(modelItem => item.Nombre)</strong></td>
-                <td><i class="bi bi-pin-map text-muted"></i> @Html.DisplayFor(modelItem => item.UbicacionGps)</td>
-                <td>@Html.DisplayFor(modelItem => item.SeccionalPolicial)</td>
-                <td class="text-center">
-                    <a asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil"></i> Editar</a>
-                    <a asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-eye"></i> Detalles</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash"></i> Eliminar</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-</div>
-
-<div class="d-flex justify-content-between align-items-center mt-4">
-    <div>
-        <span class="text-muted small">Página @ViewBag.CurrentPage de @(ViewBag.TotalPages == 0 ? 1 : ViewBag.TotalPages)</span>
+<div class="card shadow-sm p-4 mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0 text-warning"><i class="bi bi-geo-alt-fill"></i> Apiarios</h2>
+        <a asp-action="Create" class="btn btn-warning fw-bold"><i class="bi bi-plus-circle"></i> Nuevo Apiario</a>
     </div>
-    <div class="d-flex gap-2">
-        @if (ViewBag.HasPreviousPage)
-        {
-            <a href="?page=@(ViewBag.CurrentPage - 1)" class="btn-paginado-dorado"><i class="bi bi-arrow-left"></i> Anterior</a>
-        }
-        else
-        {
-            <span class="btn-paginado-dorado disabled"><i class="bi bi-arrow-left"></i> Anterior</span>
-        }
 
-        @if (ViewBag.HasNextPage)
-        {
-            <a href="?page=@(ViewBag.CurrentPage + 1)" class="btn-paginado-dorado">Siguiente <i class="bi bi-arrow-right"></i></a>
-        }
-        else
-        {
-            <span class="btn-paginado-dorado disabled">Siguiente <i class="bi bi-arrow-right"></i></span>
-        }
+    <div class="table-responsive">
+        <table class="table table-hover align-middle table-honey">
+            <thead>
+                <tr>
+                    <th>Nombre del Apiario</th>
+                    <th>Ubicación (GPS)</th>
+                    <th>Seccional Policial</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td><strong>@Html.DisplayFor(modelItem => item.Nombre)</strong></td>
+                        <td><i class="bi bi-pin-map text-muted"></i> @Html.DisplayFor(modelItem => item.UbicacionGps)</td>
+                        <td>@Html.DisplayFor(modelItem => item.SeccionalPolicial)</td>
+                        <td class="text-center">
+                            <a asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil"></i> Editar</a>
+                            <a asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-eye"></i> Detalles</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash"></i> Eliminar</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <div>
+            <span class="text-muted small">Página @ViewBag.CurrentPage de @(ViewBag.TotalPages == 0 ? 1 : ViewBag.TotalPages)</span>
+        </div>
+        <div class="d-flex gap-2">
+            @if (ViewBag.HasPreviousPage)
+            {
+                <a href="?page=@(ViewBag.CurrentPage - 1)" class="btn-paginado-dorado"><i class="bi bi-arrow-left"></i> Anterior</a>
+            }
+            else
+            {
+                <span class="btn-paginado-dorado disabled"><i class="bi bi-arrow-left"></i> Anterior</span>
+            }
+
+            @if (ViewBag.HasNextPage)
+            {
+                <a href="?page=@(ViewBag.CurrentPage + 1)" class="btn-paginado-dorado">Siguiente <i class="bi bi-arrow-right"></i></a>
+            }
+            else
+            {
+                <span class="btn-paginado-dorado disabled">Siguiente <i class="bi bi-arrow-right"></i></span>
+            }
+        </div>
     </div>
 </div>
 

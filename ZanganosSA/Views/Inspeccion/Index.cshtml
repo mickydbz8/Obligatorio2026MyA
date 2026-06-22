@@ -1,66 +1,537 @@
 @{
-    ViewData["Title"] = "Inspección Rápida de Campo (IA)";
+    ViewData["Title"] = "Asistente de Inspección Inteligente";
 }
 
-<div class="container mt-4">
-    <div class="text-center mb-5">
-        <h2 class="text-info fw-bold"><i class="bi bi-robot"></i> Asistente de Campo con IA</h2>
-        <p class="lead">Simulación de la interfaz Manos Libres y Visión Computacional para uso con traje de apicultor.</p>
-    </div>
-
-    @if (TempData["MensajeVoz"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
-            <i class="bi bi-mic-fill"></i> @TempData["MensajeVoz"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
-
-    @if (TempData["MensajeCamara"] != null)
-    {
-        <div class="alert alert-warning alert-dismissible fade show shadow-sm" role="alert">
-            <i class="bi bi-camera-fill"></i> @TempData["MensajeCamara"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
-
-    <div class="row text-center mt-5">
-        <div class="col-md-6 mb-4">
-            <div class="card shadow border-0 rounded-4">
-                <div class="card-body py-5">
-                    <h1 class="display-1 text-primary mb-3"><i class="bi bi-mic"></i></h1>
-                    <h4 class="card-title">Dictado de Voz</h4>
-                    <p class="card-text text-muted mb-4">
-                        Toca el botón para simular que Matías está dictando observaciones sobre una colmena usando el micrófono de su móvil.
-                    </p>
-                    <form asp-action="SimularVoz" method="post">
-                        <button type="submit" class="btn btn-warning btn-lg rounded-pill px-5 shadow-sm text-dark fw-bold">
-                            <i class="bi bi-play-circle-fill"></i> Simular Dictado
-                        </button>
-                    </form>
-                </div>
+<div class="container-fluid py-4 bg-dark text-light min-vh-100" style="background: radial-gradient(circle at top right, #1f2d3d, #0f172a) !important;">
+    <div class="container">
+        <!-- Header -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-5 border-bottom border-secondary pb-4">
+            <div>
+                <h1 class="display-5 text-info fw-bold mb-1"><i class="bi bi-robot"></i> Asistente de Inspección Inteligente</h1>
+                <p class="text-muted lead mb-0">Sistema Manos Libres y Visión Computacional con Inteligencia Artificial para Apicultura.</p>
+            </div>
+            <div class="mt-3 mt-md-0">
+                <a href="/" class="btn btn-outline-light rounded-pill px-4"><i class="bi bi-house-door-fill me-2"></i>Inicio</a>
             </div>
         </div>
 
-        <div class="col-md-6 mb-4">
-            <div class="card shadow border-0 rounded-4">
-                <div class="card-body py-5">
-                    <h1 class="display-1 text-warning mb-3"><i class="bi bi-camera"></i></h1>
-                    <h4 class="card-title">Análisis de Material</h4>
-                    <p class="card-text text-muted mb-4">
-                        Toca el botón para simular que la cámara analiza el estado de un cajón y genera un diagnóstico preventivo.
-                    </p>
-                    <form asp-action="SimularCamara" method="post">
-                        <button type="submit" class="btn btn-warning btn-lg rounded-pill px-5 shadow-sm text-dark fw-bold">
-                            <i class="bi bi-camera-fill"></i> Simular Análisis
-                        </button>
-                    </form>
+        <!-- Dashboard Layout -->
+        <div class="row">
+            <!-- LEFT PANEL: Voice Control & Voice Logs -->
+            <div class="col-lg-6 mb-4">
+                <div class="card bg-dark text-white border-0 shadow-lg rounded-4 overflow-hidden h-100" style="background: rgba(30, 41, 59, 0.7) !important; backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1) !important;">
+                    <div class="card-header bg-transparent border-bottom border-secondary py-3 d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0 text-info"><i class="bi bi-mic-fill me-2"></i>Asistente de Voz Manos Libres</h4>
+                        <span class="badge bg-success rounded-pill px-3 py-2" id="voiceStatusBadge">Listo para Dictar</span>
+                    </div>
+                    <div class="card-body p-4 d-flex flex-column justify-content-between">
+                        <!-- Colmena Selector -->
+                        <div class="mb-4">
+                            <label for="colmenaSelect" class="form-label text-muted fw-bold small uppercase">Seleccionar Colmena Base:</label>
+                            <select id="colmenaSelect" class="form-select bg-secondary text-white border-secondary rounded-3">
+                                <option value="">Cargando colmenas...</option>
+                            </select>
+                        </div>
+
+                        <!-- Audio Wave Visualizer Area -->
+                        <div class="position-relative bg-black rounded-4 p-4 mb-4 d-flex flex-column align-items-center justify-content-center" style="height: 180px; border: 1px dashed rgba(255, 255, 255, 0.2);">
+                            <canvas id="waveformCanvas" class="w-100 position-absolute top-0 start-0 h-100 rounded-4" style="opacity: 0.85; pointer-events: none;"></canvas>
+                            
+                            <div class="text-center z-1">
+                                <button type="button" id="recordBtn" class="btn btn-danger btn-lg rounded-circle p-4 shadow-lg mb-3" style="width: 80px; height: 80px; transition: all 0.3s ease;">
+                                    <i class="bi bi-mic-fill fs-2" id="micIcon"></i>
+                                </button>
+                                <p class="small text-muted mb-0" id="micHint">Haz clic para activar el micrófono o usa los atajos rápidos abajo</p>
+                            </div>
+                        </div>
+
+                        <!-- Speech Output -->
+                        <div class="mb-4">
+                            <label class="form-label text-muted fw-bold small uppercase">Texto Transcrito por la IA:</label>
+                            <div class="bg-secondary bg-opacity-20 p-3 rounded-3 border border-secondary text-info fw-semibold" id="transcriptionText" style="min-height: 60px;">
+                                "Escuchando observaciones de campo..."
+                            </div>
+                        </div>
+
+                        <!-- Quick Simulator Presets -->
+                        <div class="mb-4">
+                            <label class="form-label text-muted fw-bold small uppercase">Presintonías de Voz (Simulación Rápida):</label>
+                            <div class="d-flex flex-wrap gap-2">
+                                <button class="btn btn-sm btn-outline-info rounded-pill voice-preset" data-text="Colmena 1 en estado critico y sin reina">
+                                    <i class="bi bi-virus me-1"></i> Colmena 1 Crítica / Sin Reina
+                                </button>
+                                <button class="btn btn-sm btn-outline-info rounded-pill voice-preset" data-text="Colmena 4 en excelente estado con reina joven y activa">
+                                    <i class="bi bi-shield-check me-1"></i> Colmena 4 Excelente
+                                </button>
+                                <button class="btn btn-sm btn-outline-info rounded-pill voice-preset" data-text="Colmena 2 regular reina debil">
+                                    <i class="bi bi-exclamation-triangle me-1"></i> Colmena 2 Regular
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- DB Status Response Card -->
+                        <div class="card border-0 rounded-3 text-white p-3 d-none" id="responseCard" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4) !important;">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <i class="bi bi-check-circle-fill text-success fs-3"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1 text-success fw-bold">Actualización Realizada en Base de Datos</h6>
+                                    <p class="mb-0 small text-light" id="responseMessage"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL: Computer Vision Image / Camera Area -->
+            <div class="col-lg-6 mb-4">
+                <div class="card bg-dark text-white border-0 shadow-lg rounded-4 overflow-hidden h-100" style="background: rgba(30, 41, 59, 0.7) !important; backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1) !important;">
+                    <div class="card-header bg-transparent border-bottom border-secondary py-3 d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0 text-warning"><i class="bi bi-camera-fill me-2"></i>Visión Computacional en Tiempo Real</h4>
+                        <span class="badge bg-warning text-dark rounded-pill px-3 py-2" id="visionStatusBadge">Cámara Lista</span>
+                    </div>
+                    <div class="card-body p-4 d-flex flex-column justify-content-between">
+                        <!-- Camera Viewport / Image Area -->
+                        <div class="position-relative bg-black rounded-4 overflow-hidden mb-4 d-flex align-items-center justify-content-center" style="height: 300px; border: 1px solid rgba(255, 255, 255, 0.15);">
+                            <!-- Scanner Laser Effect -->
+                            <div class="scanner-laser d-none" id="scannerLaser"></div>
+                            
+                            <!-- Main Preview Image -->
+                            <img id="visionImagePreview" src="/images/beehive_inspection.png" class="w-100 h-100 object-fit-cover" alt="Vista de Inspección" />
+                            
+                            <!-- Live Camera Video (if supported/activated) -->
+                            <video id="webcamVideo" class="w-100 h-100 object-fit-cover d-none" autoplay playsinline></video>
+
+                            <!-- Bounding Boxes Container -->
+                            <div class="position-absolute top-0 start-0 w-100 h-100" id="boundingBoxesContainer" style="pointer-events: none;"></div>
+                        </div>
+
+                        <!-- Interactive Controls -->
+                        <div class="d-flex flex-wrap gap-2 justify-content-center mb-4">
+                            <button type="button" class="btn btn-outline-warning btn-md rounded-pill px-3" id="toggleWebcamBtn">
+                                <i class="bi bi-camera me-1"></i> Usar Cámara Real
+                            </button>
+                            <button type="button" class="btn btn-warning btn-md rounded-pill text-dark fw-bold px-4" id="analyzeBtn">
+                                <i class="bi bi-cpu-fill me-1"></i> Iniciar Escaneo IA
+                            </button>
+                        </div>
+
+                        <!-- Image Presets Selector -->
+                        <div class="mb-4">
+                            <label class="form-label text-muted fw-bold small uppercase">Imágenes de Prueba (Simulador):</label>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <div class="card bg-secondary bg-opacity-25 border border-warning rounded-3 p-2 cursor-pointer preset-img-card active" data-preset="beehive_inspection" data-src="/images/beehive_inspection.png" style="cursor: pointer;">
+                                        <img src="/images/beehive_inspection.png" class="w-100 rounded object-fit-cover" style="height: 60px;" />
+                                        <div class="text-center mt-1 small">Cajón Viejo (Madera)</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="card bg-secondary bg-opacity-25 border border-secondary rounded-3 p-2 cursor-pointer preset-img-card" data-preset="healthy_honeycomb" data-src="/images/healthy_honeycomb.png" style="cursor: pointer;">
+                                        <img src="/images/healthy_honeycomb.png" class="w-100 rounded object-fit-cover" style="height: 60px;" />
+                                        <div class="text-center mt-1 small">Panal Saludable</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- AI Vision Results Card -->
+                        <div class="card bg-secondary bg-opacity-20 border border-secondary rounded-3 p-3 d-none" id="visionResultCard">
+                            <h6 class="text-warning fw-bold border-bottom border-secondary pb-2 mb-2"><i class="bi bi-cpu-fill me-1"></i>Resultados del Análisis Visual IA</h6>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <span class="text-muted small">Estructura Detectada:</span>
+                                    <p class="fw-semibold mb-2" id="visionMaterialType">-</p>
+                                </div>
+                                <div class="col-sm-6">
+                                    <span class="text-muted small">Precisión:</span>
+                                    <p class="fw-semibold mb-2 text-success" id="visionConfidence">-</p>
+                                </div>
+                                <div class="col-12">
+                                    <span class="text-muted small">Diagnóstico / Condición de Mantenimiento:</span>
+                                    <p class="fw-semibold mb-0 text-info" id="visionCondition">-</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="text-center mt-5">
-        <a href="/" class="btn btn-outline-info"><i class="bi bi-arrow-left"></i> Volver al Inicio</a>
     </div>
 </div>
+
+<style>
+    .cursor-pointer {
+        cursor: pointer;
+    }
+    .preset-img-card.active {
+        border-color: #ffc107 !important;
+        background-color: rgba(255, 193, 7, 0.15) !important;
+    }
+    /* Scanner line animation */
+    .scanner-laser {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(to right, transparent, #ffc107, transparent);
+        box-shadow: 0 0 12px 3px #ffc107;
+        z-index: 5;
+        animation: scan 2s linear infinite;
+    }
+    @@keyframes scan {
+        0% { top: 0%; }
+        50% { top: 100%; }
+        100% { top: 0%; }
+    }
+    /* Bounding box animation styling */
+    .ai-bounding-box {
+        position: absolute;
+        border: 2px solid #22c55e;
+        background-color: rgba(34, 197, 94, 0.15);
+        color: #fff;
+        font-size: 11px;
+        font-weight: bold;
+        box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+        animation: fadeIn 0.4s ease;
+    }
+    .ai-box-label {
+        position: absolute;
+        top: -18px;
+        left: -2px;
+        background-color: #22c55e;
+        padding: 0px 6px;
+        border-radius: 2px;
+        white-space: nowrap;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // --- DATA LOAD ---
+        const colmenaSelect = document.getElementById("colmenaSelect");
+        let currentColmenas = [];
+
+        function loadColmenas() {
+            fetch('/Inspeccion/GetColmenas')
+                .then(r => r.json())
+                .then(data => {
+                    currentColmenas = data;
+                    colmenaSelect.innerHTML = "";
+                    data.forEach((c, index) => {
+                        const option = document.createElement("option");
+                        option.value = c.id;
+                        if (index === 0) option.selected = true;
+                        option.textContent = `Colmena #${c.id} (Identificador: ${c.identificador})`;
+                        colmenaSelect.appendChild(option);
+                    });
+                });
+        }
+        loadColmenas();
+
+        // --- WEB SPEECH API (MICROPHONE & SYNTHESIS) ---
+        const recordBtn = document.getElementById("recordBtn");
+        const micIcon = document.getElementById("micIcon");
+        const micHint = document.getElementById("micHint");
+        const transcriptionText = document.getElementById("transcriptionText");
+        const responseCard = document.getElementById("responseCard");
+        const responseMessage = document.getElementById("responseMessage");
+        const voiceStatusBadge = document.getElementById("voiceStatusBadge");
+
+        let recognition;
+        let isRecording = false;
+
+        // TTS Reader helper
+        function speakFeedback(text) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'es-ES';
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRec();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'es-ES';
+
+            recognition.onstart = function () {
+                isRecording = true;
+                recordBtn.classList.remove("btn-danger");
+                recordBtn.classList.add("btn-success");
+                recordBtn.style.transform = "scale(1.1)";
+                micIcon.className = "bi bi-record-fill";
+                micHint.textContent = "Grabando... Habla ahora (Ej: 'Colmena 4 regular')";
+                voiceStatusBadge.className = "badge bg-danger rounded-pill px-3 py-2";
+                voiceStatusBadge.textContent = "Escuchando...";
+                startWaveform();
+            };
+
+            recognition.onerror = function (e) {
+                console.error("Speech Error:", e);
+                stopRecordingUI();
+            };
+
+            recognition.onend = function () {
+                stopRecordingUI();
+            };
+
+            recognition.onresult = function (event) {
+                const text = event.results[0][0].transcript;
+                transcriptionText.textContent = `"${text}"`;
+                sendSpeechToServer(text);
+            };
+        } else {
+            micHint.textContent = "Reconocimiento de voz nativo no soportado. ¡Usa los botones rápidos de simulación!";
+        }
+
+        function stopRecordingUI() {
+            isRecording = false;
+            recordBtn.classList.add("btn-danger");
+            recordBtn.classList.remove("btn-success");
+            recordBtn.style.transform = "scale(1)";
+            micIcon.className = "bi bi-mic-fill";
+            micHint.textContent = "Haz clic para activar el micrófono o usa los atajos rápidos abajo";
+            voiceStatusBadge.className = "badge bg-success rounded-pill px-3 py-2";
+            voiceStatusBadge.textContent = "Listo para Dictar";
+            stopWaveform();
+        }
+
+        recordBtn.addEventListener("click", function () {
+            if (!recognition) {
+                alert("El reconocimiento de voz nativo no está disponible. Usa los botones simuladores.");
+                return;
+            }
+            if (isRecording) {
+                recognition.stop();
+            } else {
+                recognition.start();
+            }
+        });
+
+        // Click presets (voice simulations)
+        document.querySelectorAll(".voice-preset").forEach(btn => {
+            btn.addEventListener("click", function () {
+                const text = this.getAttribute("data-text");
+                transcriptionText.textContent = `"${text}"`;
+                speakFeedback("Procesando dictado");
+                // Animate waveform briefly
+                startWaveform();
+                setTimeout(() => {
+                    stopWaveform();
+                    sendSpeechToServer(text);
+                }, 1500);
+            });
+        });
+
+        function sendSpeechToServer(text) {
+            const colId = colmenaSelect.value || 1;
+            fetch('/Inspeccion/ProcesarVoz', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ colmenaId: parseInt(colId), texto: text })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    responseCard.classList.remove("d-none");
+                    responseMessage.innerHTML = `${data.mensaje} <br/><strong>Estado General:</strong> ${data.estadoGeneral} | <strong>Reina:</strong> ${data.estadoReina}`;
+                    speakFeedback(`Base de datos actualizada. Colmena ${data.colmenaId}. Estado general ${data.estadoGeneral}.`);
+                    loadColmenas();
+                } else {
+                    alert(data.message);
+                }
+            });
+        }
+
+
+        // --- AUDIO WAVEFORM CANVAS ANIMATION ---
+        const canvas = document.getElementById("waveformCanvas");
+        const ctx = canvas.getContext("2d");
+        let waveAnimId;
+        let phase = 0;
+
+        function resizeCanvas() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+        }
+        resizeCanvas();
+        window.addEventListener("resize", resizeCanvas);
+
+        function drawWave() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = "rgba(13, 202, 240, 0.4)";
+            ctx.lineWidth = 2;
+            
+            ctx.beginPath();
+            for (let x = 0; x < canvas.width; x++) {
+                const y = canvas.height / 2 + Math.sin(x * 0.03 + phase) * 20 * Math.sin(x * 0.005);
+                if (x === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+            ctx.strokeStyle = "rgba(220, 53, 69, 0.6)";
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            for (let x = 0; x < canvas.width; x++) {
+                const y = canvas.height / 2 + Math.sin(x * 0.05 - phase) * 15 * Math.cos(x * 0.01);
+                if (x === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+            phase += 0.15;
+            waveAnimId = requestAnimationFrame(drawWave);
+        }
+
+        function startWaveform() {
+            cancelAnimationFrame(waveAnimId);
+            drawWave();
+        }
+
+        function stopWaveform() {
+            cancelAnimationFrame(waveAnimId);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+
+        // --- VISION SYSTEM (IMAGE PRESETS, SCANNER, BOUNDING BOXES) ---
+        const visionImagePreview = document.getElementById("visionImagePreview");
+        const webcamVideo = document.getElementById("webcamVideo");
+        const toggleWebcamBtn = document.getElementById("toggleWebcamBtn");
+        const analyzeBtn = document.getElementById("analyzeBtn");
+        const scannerLaser = document.getElementById("scannerLaser");
+        const boundingBoxesContainer = document.getElementById("boundingBoxesContainer");
+        const visionResultCard = document.getElementById("visionResultCard");
+        const visionStatusBadge = document.getElementById("visionStatusBadge");
+
+        const visionMaterialType = document.getElementById("visionMaterialType");
+        const visionConfidence = document.getElementById("visionConfidence");
+        const visionCondition = document.getElementById("visionCondition");
+
+        let activePreset = "beehive_inspection";
+        let localStream = null;
+
+        // Toggle presets
+        document.querySelectorAll(".preset-img-card").forEach(card => {
+            card.addEventListener("click", function () {
+                document.querySelectorAll(".preset-img-card").forEach(c => c.classList.remove("active"));
+                this.classList.add("active");
+                activePreset = this.getAttribute("data-preset");
+                
+                // Show preset image
+                visionImagePreview.src = this.getAttribute("data-src");
+                visionImagePreview.classList.remove("d-none");
+                webcamVideo.classList.add("d-none");
+                
+                // Reset bounding boxes and camera
+                clearBoundingBoxes();
+                visionResultCard.classList.add("d-none");
+                stopWebcam();
+            });
+        });
+
+        function clearBoundingBoxes() {
+            boundingBoxesContainer.innerHTML = "";
+        }
+
+        function stopWebcam() {
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
+            }
+            toggleWebcamBtn.innerHTML = '<i class="bi bi-camera me-1"></i> Usar Cámara Real';
+            toggleWebcamBtn.classList.remove("btn-danger");
+            toggleWebcamBtn.classList.add("btn-outline-warning");
+            visionStatusBadge.className = "badge bg-warning text-dark rounded-pill px-3 py-2";
+            visionStatusBadge.textContent = "Cámara Lista";
+        }
+
+        // Real webcam support
+        toggleWebcamBtn.addEventListener("click", async function () {
+            if (localStream) {
+                stopWebcam();
+                visionImagePreview.classList.remove("d-none");
+                webcamVideo.classList.add("d-none");
+            } else {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                    localStream = stream;
+                    webcamVideo.srcObject = stream;
+                    webcamVideo.classList.remove("d-none");
+                    visionImagePreview.classList.add("d-none");
+                    toggleWebcamBtn.innerHTML = '<i class="bi bi-camera-video-off me-1"></i> Detener Cámara';
+                    toggleWebcamBtn.classList.remove("btn-outline-warning");
+                    toggleWebcamBtn.classList.add("btn-danger");
+                    visionStatusBadge.className = "badge bg-danger rounded-pill px-3 py-2";
+                    visionStatusBadge.textContent = "Transmisión en Vivo";
+                    clearBoundingBoxes();
+                    visionResultCard.classList.add("d-none");
+                    activePreset = "custom_camera";
+                } catch (e) {
+                    alert("No se pudo acceder a la cámara. Revisa los permisos del navegador.");
+                    console.error(e);
+                }
+            }
+        });
+
+        // AI Scan simulation
+        analyzeBtn.addEventListener("click", function () {
+            clearBoundingBoxes();
+            visionResultCard.classList.add("d-none");
+            
+            // Show laser scanner
+            scannerLaser.classList.remove("d-none");
+            speakFeedback("Escaneando material");
+
+            // Post request to simulate detection
+            fetch('/Inspeccion/ProcesarVision', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ preset: activePreset })
+            })
+            .then(r => r.json())
+            .then(data => {
+                // Wait 2 seconds for scanning animation
+                setTimeout(() => {
+                    scannerLaser.classList.add("d-none");
+                    if (data.success) {
+                        // Display information
+                        visionResultCard.classList.remove("d-none");
+                        visionMaterialType.textContent = data.tipoMaterial;
+                        visionConfidence.textContent = `${(data.nivelConfianza * 100).toFixed(0)}%`;
+                        visionCondition.textContent = data.condicion;
+
+                        // Speak results
+                        speakFeedback(`Escaneo completado. Detectado ${data.tipoMaterial} con ${data.condicion}`);
+
+                        // Draw bounding boxes on target
+                        data.boundingBoxes.forEach(box => {
+                            const boxEl = document.createElement("div");
+                            boxEl.className = "ai-bounding-box";
+                            boxEl.style.left = `${box.x}px`;
+                            boxEl.style.top = `${box.y}px`;
+                            boxEl.style.width = `${box.w}px`;
+                            boxEl.style.height = `${box.h}px`;
+                            
+                            const labelEl = document.createElement("span");
+                            labelEl.className = "ai-box-label";
+                            labelEl.textContent = `${box.label} (${(box.confidence * 100).toFixed(0)}%)`;
+                            
+                            boxEl.appendChild(labelEl);
+                            boundingBoxesContainer.appendChild(boxEl);
+                        });
+                    }
+                }, 2000);
+            });
+        });
+    });
+</script>

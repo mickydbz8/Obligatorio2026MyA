@@ -73,7 +73,7 @@ namespace ZanganosSA.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Identificador,EstadoGeneral,EstadoReina,UltimaInspeccion,ApiarioId")] Colmena colmena)
+        public async Task<IActionResult> Create([Bind("Id,Identificador,EstadoGeneral,EstadoReina,UltimaInspeccion,FechaProximaAlimentacion,CostoMantenimiento,ApiarioId")] Colmena colmena)
         {
             if (ModelState.IsValid)
             {
@@ -107,7 +107,7 @@ namespace ZanganosSA.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Identificador,EstadoGeneral,EstadoReina,UltimaInspeccion,ApiarioId")] Colmena colmena)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Identificador,EstadoGeneral,EstadoReina,UltimaInspeccion,FechaProximaAlimentacion,CostoMantenimiento,ApiarioId")] Colmena colmena)
         {
             if (id != colmena.Id)
             {

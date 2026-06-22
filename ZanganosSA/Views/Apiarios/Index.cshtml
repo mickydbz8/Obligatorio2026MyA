@@ -31,6 +31,7 @@
                             <a asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil"></i> Editar</a>
                             <a asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-eye"></i> Detalles</a>
                             <a asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash"></i> Eliminar</a>
+                            <a asp-action="ReporteMGAP" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary ms-1" title="Generar Declaración MGAP"><i class="bi bi-file-earmark-text-fill"></i> Declaración MGAP</a>
                         </td>
                     </tr>
                 }

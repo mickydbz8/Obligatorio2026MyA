@@ -21,6 +21,13 @@ namespace ZanganosSA.Models
         [Display(Name = "Fecha de Última Inspección")]
         public DateTime UltimaInspeccion { get; set; } = DateTime.Now;
 
+        [Display(Name = "Próxima Alimentación Suplementaria")]
+        public DateTime? FechaProximaAlimentacion { get; set; }
+
+        [Display(Name = "Costo de Mantenimiento ($)")]
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal CostoMantenimiento { get; set; } = 0m;
+
         // Relación N a 1 con Apiario
         [Required]
         [ForeignKey("Apiario")]

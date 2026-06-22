@@ -169,5 +169,22 @@ namespace ZanganosSA.Controllers
         {
             return _context.Apiarios.Any(e => e.Id == id);
         }
+
+        // GET: Apiarios/ReporteMGAP/5
+        public async Task<IActionResult> ReporteMGAP(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var apiario = await _context.Apiarios
+                .Include(a => a.Colmenas)
+                    .ThenInclude(c => c.Tratamientos)
+                .Include(a => a.Cosechas)
+                    .ThenInclude(c => c.Barriles)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (apiario == null) return NotFound();
+
+            return View(apiario);
+        }
     }
 }

@@ -19,6 +19,19 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
+        var limiteAlerta = DateTime.Now.AddHours(48);
+        var colmenasEnAlerta = await _context.Colmenas
+            .Include(c => c.Apiario)
+            .Where(c => c.FechaProximaAlimentacion.HasValue && c.FechaProximaAlimentacion.Value <= limiteAlerta)
+            .OrderBy(c => c.FechaProximaAlimentacion)
+            .ToListAsync();
+
+        var colmenasActivas = await _context.Colmenas.CountAsync(c => c.EstadoGeneral == "Buena" || c.EstadoGeneral == "Excelente");
+        // Estimación: 30kg por colmena activa
+        var produccionEstimada = colmenasActivas * 30.0m;
+
+        var costoTotal = await _context.Colmenas.SumAsync(c => c.CostoMantenimiento);
+
         var viewModel = new HomeViewModel
         {
             TotalApiarios = await _context.Apiarios.CountAsync(),
@@ -27,7 +40,10 @@ public class HomeController : Controller
                 .Include(t => t.Colmena)
                 .Where(t => t.Estado == "En Curso")
                 .OrderBy(t => t.FechaInicio)
-                .ToListAsync()
+                .ToListAsync(),
+            ColmenasPorAlimentar = colmenasEnAlerta,
+            ProduccionEstimadaFutura = produccionEstimada,
+            CostoTotalEstimado = costoTotal
         };
 
         return View(viewModel);
